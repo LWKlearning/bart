@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BART CRT URL Launcher</title>
+<style>
+html, body {
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    background: black;
+    font-family: "Courier New", monospace;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* CRT wrapper full screen */
+.crt {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    color: #00aaff;
+    text-shadow: 0 0 12px #00aaff;
+    animation: flicker 0.15s infinite;
+    padding: 40px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+/* Scanlines */
+.crt::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        to bottom,
+        rgba(0,170,255,0.05) 0px,
+        rgba(0,170,255,0.05) 2px,
+        transparent 2px,
+        transparent 4px
+    );
+    pointer-events: none;
+}
+
+/* Vignette */
+.crt::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center,
+        transparent 60%,
+        rgba(0,0,0,0.85) 100%);
+    pointer-events: none;
+}
+
+/* Flicker */
+@keyframes flicker {
+    0% { opacity: 0.97; }
+    50% { opacity: 1; }
+    100% { opacity: 0.98; }
+}
+
+.terminal-line {
+    margin: 20px 0;
+    font-size: 36px;
+}
+
+input {
+    padding: 16px;
+    font-size: 32px;
+    background: black;
+    color: #00aaff;
+    border: 3px solid #00aaff;
+    width: 80%;
+    max-width: 800px;
+    outline: none;
+    display: block;
+    margin: 20px auto;
+}
+
+button {
+    padding: 16px 40px;
+    font-size: 32px;
+    background: transparent;
+    border: 3px solid #00aaff;
+    color: #00aaff;
+    cursor: pointer;
+}
+
+button:hover {
+    background: rgba(0,170,255,0.1);
+}
+</style>
+</head>
+<body>
+<div class="crt">
+    <div class="terminal-line">BART</div>
+    <div class="terminal-line">Enter a URL below:</div>
+    <input id="urlInput" type="text" placeholder="example.com or https://example.com/">
+    <button onclick="openURL()">Launch</button>
+</div>
+
+<script>
+function normalizeURL(url) {
+    url = url.trim();
+    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+        url = "https://" + url;
+    }
+    if (!url.includes("/", 8)) { // ensure trailing slash
+        url += "/";
+    }
+    return url;
+}
+
+function openURL() {
+    const input = document.getElementById("urlInput").value;
+    if (!input) return alert("Please enter a URL.");
+    const normalized = normalizeURL(input);
+    const proxyURL = "https://super-field-2580.maxandbudzhaha.workers.dev/?url=" + normalized;
+
+    // Open new tab without sending referrer
+    const newTab = window.open(proxyURL, "_blank", "noopener,noreferrer");
+    if (!newTab) {
+        
+    }
+}
+</script>
+</body>
+</html>
