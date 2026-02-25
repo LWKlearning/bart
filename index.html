@@ -124,8 +124,8 @@ function openURL() {
     const proxyURL =
         "https://super-field-2580.maxandbudzhaha.workers.dev/?url=" + normalized;
 
-    // Open about:blank first (popup-safe, writable)
-    const newTab = window.open("about:blank", "_blank", "noopener,noreferrer");
+    // IMPORTANT: no `noopener`
+    const newTab = window.open("about:blank", "_blank", "noreferrer");
     if (!newTab) return;
 
     fetch(proxyURL)
@@ -138,7 +138,7 @@ function openURL() {
         .catch(err => {
             newTab.document.open();
             newTab.document.write(`
-                <pre style="background:black;color:#33ff33;font-family:monospace;">
+                <pre style="background:black;color:#00aaff;font-family:Courier New, monospace;">
 LOAD FAILED
 ${err}
                 </pre>
@@ -150,4 +150,5 @@ ${err}
 </body>
 
 </html>
+
 
