@@ -119,16 +119,35 @@ function normalizeURL(url) {
 function openURL() {
     const input = document.getElementById("urlInput").value;
     if (!input) return alert("Please enter a URL.");
-    const normalized = normalizeURL(input);
-    const proxyURL = "https://super-field-2580.maxandbudzhaha.workers.dev/?url=" + normalized;
 
-    // Open new tab without sending referrer
-    const newTab = window.open(proxyURL, "_blank", "noopener,noreferrer");
-    if (!newTab) {
-        
-    }
+    const normalized = normalizeURL(input);
+    const proxyURL =
+        "https://super-field-2580.maxandbudzhaha.workers.dev/?url=" + normalized;
+
+    // Open about:blank first (popup-safe, writable)
+    const newTab = window.open("about:blank", "_blank", "noopener,noreferrer");
+    if (!newTab) return;
+
+    fetch(proxyURL)
+        .then(res => res.text())
+        .then(html => {
+            newTab.document.open();
+            newTab.document.write(html);
+            newTab.document.close();
+        })
+        .catch(err => {
+            newTab.document.open();
+            newTab.document.write(`
+                <pre style="background:black;color:#33ff33;font-family:monospace;">
+LOAD FAILED
+${err}
+                </pre>
+            `);
+            newTab.document.close();
+        });
 }
 </script>
 </body>
 
 </html>
+
